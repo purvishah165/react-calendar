@@ -231,3 +231,29 @@ main {
   flex-basis: calc(100%/7);
   width: calc(100%/7);
 }
+.event{
+  position: absolute;
+  font-size: 82.5%;
+  line-height: 1;
+  top: 2.75em;
+  /* right: .75em; */
+  /* font-weight: 700; */
+  font-size: 10px;
+  color: white;
+  list-style: none;
+  padding: 0px;
+}
+.event >li{
+  padding: 5px;
+  margin-bottom: 5px;
+}
+
+.event >.team{
+  background-color: blue;
+}
+.event >.solo{
+  background-color: green;
+}
+.event >.company{
+  background-color: orange;
+}

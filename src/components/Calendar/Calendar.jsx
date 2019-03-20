@@ -1,12 +1,17 @@
 import React from "react";
 import dateFns from "date-fns";
-
+import Modal from '../EventModal/EventModal'
+import { connect } from "react-redux";
+const mapStateToProps = state => {
+    return { events: state.events };
+};
 class Calendar extends React.Component {
     constructor(props) {
        super(props);
         this.state = {
             currentMonth: new Date(),
-            selectedDate: new Date()
+            selectedDate: new Date(),
+            showEvent: false
         };
     }
     renderHeader() {
@@ -79,7 +84,8 @@ class Calendar extends React.Component {
                         onClick={() => this.onDateClick(dateFns.parse(cloneDay))}
                     >
                         <span className="number">{formattedDate}</span>
-                        <span className="bg">{formattedDate}</span>
+                        {this.renderEvents(day)}
+                        <span className=""></span>
                     </div>
                 );
                 day = dateFns.addDays(day, 1);
@@ -94,20 +100,47 @@ class Calendar extends React.Component {
         return <div className="body">{rows}</div>;
     }
 
+    renderEvents(day) {
+        if (this.props.events && this.props.events.length > 0) {
+            let eventList = [];
+            for (let e =0; e< this.props.events.length; e++) {
+                if (dateFns.isSameDay(day, this.props.events[e].date)){
+                    console.log('event in same day');
+                    const stateClassName = (this.props.events[e].state).toLowerCase();
+                    eventList.push(
+                        <li className={stateClassName}>{this.props.events[e].title}</li>
+                    )
+                }
+            }
+            return <ul className="event">{eventList}</ul>;
+        }
+    }
     onDateClick = day => {
         this.setState({
-            selectedDate: day
+            selectedDate: day,
+            showEvent: !this.state.showEvent
         });
+    };
+    showModal = () => {
+        this.setState({ showEvent: true });
+    };
+
+    hideModal = () => {
+        this.setState({ showEvent: false });
     };
     render() {
         return (
-            <div className="calendar">
-                {this.renderHeader()}
-                {this.renderDays()}
-                {this.renderCells()}
+            <div>
+                <Modal show={this.state.showEvent} date={this.state.selectedDate} handleClose={this.hideModal}>
+                </Modal>
+                <div className="calendar">
+                    {this.renderHeader()}
+                    {this.renderDays()}
+                    {this.renderCells()}
+                </div>
             </div>
         );
     }
 }
 
-export default Calendar;
+export default connect(mapStateToProps)(Calendar);
